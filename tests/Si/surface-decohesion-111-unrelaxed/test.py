@@ -20,7 +20,7 @@ bulk.set_calculator(model.calculator)
 
 # use one of the routines from utilities module to relax the initial
 # unit cell and atomic positions
-bulk = relax_config(bulk, relax_pos=True, relax_cell=False, tol=fmax, traj_file=None)
+bulk = relax_config(bulk, relax_pos=True, relax_cell=False, tol=fmax)
 
 # set up supercell
 bulk *= (1, 1, 5)

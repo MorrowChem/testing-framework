@@ -35,7 +35,7 @@ if not hasattr(model, 'bulk_reference'):
     # use one of the routines from utilities module to relax the initial
     # unit cell and atomic positions
     #bulk = relax_atoms_cell(bulk, tol=fmax, traj_file=None)
-    bulk = relax_config(bulk, relax_pos=True, relax_cell=True, tol=1.0e-4, traj_file=None)
+    bulk = relax_config(bulk, relax_pos=True, relax_cell=True, tol=1.0e-4)
 else:
     bulk = model.bulk_reference.copy()
     bulk.set_calculator(model.calculator)
