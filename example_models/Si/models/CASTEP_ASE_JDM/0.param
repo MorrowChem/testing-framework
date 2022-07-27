@@ -1,0 +1,42 @@
+#######################################################
+#CASTEP param file: /data/chem-amais/hert5155/GAP_to_MTP/DFT_ref/compression_MD/0.param
+#Created using the Atomic Simulation Environment (ASE)#
+# Internal settings of the calculator
+# This can be switched off by settings
+# calc._export_settings = False
+# If stated, this will be automatically processed
+# by ase.io.castep.read_seed()
+# ASE_INTERFACE _build_missing_pspots : True
+# ASE_INTERFACE _castep_command : /apps/system/easybuild/software/impi/2019.7.217-iccifort-2020.1.217/intel64/bin/mpirun  castep.serial
+# ASE_INTERFACE _castep_pp_path : /data/chem-amais/hert5155/GAP_to_MTP/DFT_ref
+# ASE_INTERFACE _check_checkfile : True
+# ASE_INTERFACE _copy_pspots : False
+# ASE_INTERFACE _directory : /data/chem-amais/hert5155/GAP_to_MTP/DFT_ref/compression_MD
+# ASE_INTERFACE _export_settings : True
+# ASE_INTERFACE _find_pspots : False
+# ASE_INTERFACE _force_write : True
+# ASE_INTERFACE _label : 0
+# ASE_INTERFACE _link_pspots : True
+# ASE_INTERFACE _pedantic : False
+# ASE_INTERFACE _prepare_input_only : True
+# ASE_INTERFACE _rename_existing_dir : False
+# ASE_INTERFACE _set_atoms : False
+# ASE_INTERFACE _track_output : False
+# ASE_INTERFACE _try_reuse : False
+#######################################################
+
+CUT_OFF_ENERGY: 250.0 
+CALCULATE_STRESS: TRUE
+OPT_STRATEGY: speed
+XC_FUNCTIONAL: PW91
+FINE_GRID_SCALE: 4.0
+FINITE_BASIS_CORR: automatic
+SPIN_POLARIZED: FALSE
+PERC_EXTRA_BANDS: 200.0
+ELEC_ENERGY_TOL: 1e-07 
+MAX_SCF_CYCLES: 250
+FIX_OCCUPANCY: FALSE
+SMEARING_WIDTH: 0.05 
+NUM_DUMP_CYCLES: 0
+MIXING_SCHEME: pulay
+MIX_HISTORY_LENGTH: 20
