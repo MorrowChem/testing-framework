@@ -1,0 +1,702 @@
+
+###### START RUN Fri Jul 29 12:35:14 2022 ######
+Model GAP_bcms_13, Test slide-11b0-H-MoS2
+Test run at 2022-07-29 12:35
+
+model file: ../../models/GAP_bcms_13/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(init_args='Potential xml_label="GAP_2017_6_17_60_4_3_56_165"',
+                                               param_filename='gp_iter6_sparse9k.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='MoSx_rss_13.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/slide-11b0-H-MoS2/test.py
+============================================================
+from utilities import relax_config
+import numpy as np
+import model
+import os
+from ase.io import read, write
+
+n_steps = 35
+max_opening = 0.5
+min_opening = 0
+
+##########################
+
+
+bulk = read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'MoS2-2H.xyz'))
+bulk.set_calculator(model.calculator)
+
+fmax = 0.01
+bulk = relax_config(bulk, relax_pos=True, relax_cell=True, tol=fmax)
+
+
+# set up supercell
+bulk *= (2, 2, 1)
+
+def surface_slip_energy(bulk, slide):
+    Nat = bulk.get_number_of_atoms()
+
+    ebulk = bulk.get_potential_energy()
+    print('bulk cell energy', ebulk)
+    pos = bulk.get_scaled_positions()
+    pos[np.argwhere(pos[:, 2] > 0.5)] += [slide, -slide, 0]
+    bulk.set_scaled_positions(pos)
+    
+
+
+    # bulk.cell[2, :] += [0.0, 0.0, 0.0]
+    
+    eexp  = bulk.get_potential_energy()
+
+    print('expanded cell energy', eexp)
+    e_form = (eexp - ebulk) / (bulk.cell[1,1]*bulk.cell[0,0])
+    print('unrelaxed 001 surface formation energy', e_form)
+    return e_form
+
+
+slide_al = []
+
+slides = []
+slide_es = []
+for i in range(n_steps + 1):
+    slide = float(i)/float(n_steps)*(max_opening - min_opening) + min_opening
+    slides.append(slide)
+    bulk_copy = bulk.copy()
+    bulk_copy.set_calculator(model.calculator)
+    slide_al.append(bulk_copy)
+    slide_es.append(surface_slip_energy(bulk_copy, slide))
+
+write('slide_11b0.xyz', slide_al)============================================================
+relax_config symmetry before refinement at default tol 1.0e-6
+ase.spacegroup.symmetrize: prec 1e-06 got symmetry group number 194 , international (Hermann-Mauguin) P6_3/mmc , Hall  -P 6c 2c
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/optimize/precon/lbfgs.py:133: UserWarning: The system is likely too small to benefit from the standard preconditioner, hence it is disabled. To re-enable preconditioning, call `PreconLBFGS` by explicitly providing the kwarg `precon`
+  warnings.warn('The system is likely too small to benefit from '
+PreconLBFGS:   0  12:35:17    -5086.155657       0.5469       0.0104
+PreconLBFGS:   1  12:35:18    -5086.163951       0.2970       0.0064
+PreconLBFGS:   2  12:35:18    -5086.187150       0.5993       0.0092
+PreconLBFGS:   3  12:35:19    -5086.231166       0.4838       0.0155
+PreconLBFGS:   4  12:35:19    -5086.259369       0.0423       0.0056
+PreconLBFGS:   5  12:35:19    -5086.287115       0.0920       0.0126
+PreconLBFGS:   6  12:35:20    -5086.290201       0.0955       0.0118
+PreconLBFGS:   7  12:35:20    -5086.293739       0.0781       0.0086
+PreconLBFGS:   8  12:35:21    -5086.297816       0.0442       0.0018
+PreconLBFGS:   9  12:35:21    -5086.298225       0.0359       0.0018
+PreconLBFGS:  10  12:35:22    -5086.298247       0.0338       0.0017
+PreconLBFGS:  11  12:35:22    -5086.298251       0.0334       0.0017
+PreconLBFGS:  12  12:35:22    -5086.298304       0.0177       0.0007
+PreconLBFGS:  13  12:35:23    -5086.298346       0.0050       0.0001
+symmetry at end of relaxation at default tol 1e-6
+ase.spacegroup.symmetrize: prec 1e-06 got symmetry group number 1 , international (Hermann-Mauguin) P1 , Hall  P 1
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/atoms.py:967: VisibleDeprecationWarning: Use get_global_number_of_atoms() instead
+  warnings.warn('Use get_global_number_of_atoms() instead',
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.19338421378
+unrelaxed 001 surface formation energy 1.4512177685687128e-12
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.169625821916
+unrelaxed 001 surface formation energy 0.0013539150756600382
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.159112231617
+unrelaxed 001 surface formation energy 0.001953051097656613
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.153472075646
+unrelaxed 001 surface formation energy 0.002274465620699176
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.13992540859
+unrelaxed 001 surface formation energy 0.0030464470256331777
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.122232368907
+unrelaxed 001 surface formation energy 0.004054716999229351
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.09707622078
+unrelaxed 001 surface formation energy 0.005488285750564191
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.08379379907
+unrelaxed 001 surface formation energy 0.0062452086550664684
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.078848080568
+unrelaxed 001 surface formation energy 0.006527049398754169
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.065972241704
+unrelaxed 001 surface formation energy 0.007260802441899725
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.046559034963
+unrelaxed 001 surface formation energy 0.008367099256741832
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.02081066127
+unrelaxed 001 surface formation energy 0.009834417056649414
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.01676506727
+unrelaxed 001 surface formation energy 0.010064962572175233
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.04238801359
+unrelaxed 001 surface formation energy 0.0086047924787773
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.07653714473
+unrelaxed 001 surface formation energy 0.006658742271038443
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.093578967095
+unrelaxed 001 surface formation energy 0.005687583098195406
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.08679269174
+unrelaxed 001 surface formation energy 0.006074311314093363
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.068107162642
+unrelaxed 001 surface formation energy 0.007139140098039462
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.067286632486
+unrelaxed 001 surface formation energy 0.007185899498004762
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.07823866234
+unrelaxed 001 surface formation energy 0.00656177820238145
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.074858632404
+unrelaxed 001 surface formation energy 0.006754395341904735
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.057301053486
+unrelaxed 001 surface formation energy 0.0077549458378977495
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.026407603735
+unrelaxed 001 surface formation energy 0.009515465133648059
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.01360078531
+unrelaxed 001 surface formation energy 0.010245284921787681
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.01309604862
+unrelaxed 001 surface formation energy 0.010274048258021449
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.019655431806
+unrelaxed 001 surface formation energy 0.009900249904003
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.025522125692
+unrelaxed 001 surface formation energy 0.00956592570676399
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.038717654006
+unrelaxed 001 surface formation energy 0.008813954580153655
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.063316267235
+unrelaxed 001 surface formation energy 0.0074121579667667985
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.094321914225
+unrelaxed 001 surface formation energy 0.005645244907796106
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.111681226295
+unrelaxed 001 surface formation energy 0.004655993007886457
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.118226376562
+unrelaxed 001 surface formation energy 0.004283005742588614
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.130634978257
+unrelaxed 001 surface formation energy 0.003575879057390728
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.146008657797
+unrelaxed 001 surface formation energy 0.0026997820305264134
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.168270531023
+unrelaxed 001 surface formation energy 0.0014311487866204566
+bulk cell energy -20345.193384213806
+expanded cell energy -20345.193384213806
+unrelaxed 001 surface formation energy 0.0
+============================================================
+Property calculation output:
+
+Traceback (most recent call last):
+  File "../../../scripts/run-model-test.py", line 147, in <module>
+    json.dump(test.properties, json_file)
+AttributeError: module 'test' has no attribute 'properties'
+
+###### START RUN Fri Jul 29 12:45:47 2022 ######
+Model GAP_bcms_13, Test slide-11b0-H-MoS2
+Test run at 2022-07-29 12:45
+
+model file: ../../models/GAP_bcms_13/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(init_args='Potential xml_label="GAP_2017_6_17_60_4_3_56_165"',
+                                               param_filename='gp_iter6_sparse9k.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='MoSx_rss_13.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/slide-11b0-H-MoS2/test.py
+============================================================
+from utilities import relax_config
+import numpy as np
+import model
+import os
+from ase.io import read, write
+
+n_steps = 35
+max_opening = 0.5
+min_opening = 0
+
+##########################
+
+
+bulk = read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'MoS2-2H.xyz'))
+bulk.set_calculator(model.calculator)
+
+fmax = 0.01
+bulk = relax_config(bulk, relax_pos=True, relax_cell=True, tol=fmax)
+
+
+# set up supercell
+bulk *= (2, 2, 1)
+
+def surface_slip_energy(bulk, slide):
+    Nat = bulk.get_number_of_atoms()
+
+    ebulk = bulk.get_potential_energy()
+    print('bulk cell energy', ebulk)
+    pos = bulk.get_scaled_positions()
+    pos[np.argwhere(pos[:, 2] > 0.5)] += [slide, -slide, 0]
+    bulk.set_scaled_positions(pos)
+    
+
+
+    # bulk.cell[2, :] += [0.0, 0.0, 0.0]
+    
+    eexp  = bulk.get_potential_energy()
+
+    print('expanded cell energy', eexp)
+    e_form = (eexp - ebulk) / (bulk.cell[1,1]*bulk.cell[0,0])
+    print('unrelaxed 001 surface formation energy', e_form)
+    return e_form
+
+
+slide_al = []
+
+slides = []
+slide_es = []
+for i in range(n_steps + 1):
+    slide = float(i)/float(n_steps)*(max_opening - min_opening) + min_opening
+    slides.append(slide)
+    bulk_copy = bulk.copy()
+    bulk_copy.set_calculator(model.calculator)
+    slide_al.append(bulk_copy)
+    slide_es.append(surface_slip_energy(bulk_copy, slide))
+
+write('slide_11b0.xyz', slide_al)
+
+properties = {'slide_path': slide, 'es': (slide_es - slide_es[0]).tolist()}
+============================================================
+relax_config symmetry before refinement at default tol 1.0e-6
+ase.spacegroup.symmetrize: prec 1e-06 got symmetry group number 194 , international (Hermann-Mauguin) P6_3/mmc , Hall  -P 6c 2c
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/optimize/precon/lbfgs.py:133: UserWarning: The system is likely too small to benefit from the standard preconditioner, hence it is disabled. To re-enable preconditioning, call `PreconLBFGS` by explicitly providing the kwarg `precon`
+  warnings.warn('The system is likely too small to benefit from '
+PreconLBFGS:   0  12:45:50    -5086.155657       0.5469       0.0104
+PreconLBFGS:   1  12:45:51    -5086.163951       0.2970       0.0064
+PreconLBFGS:   2  12:45:52    -5086.187150       0.5993       0.0092
+PreconLBFGS:   3  12:45:52    -5086.231166       0.4838       0.0155
+PreconLBFGS:   4  12:45:52    -5086.259369       0.0423       0.0056
+PreconLBFGS:   5  12:45:52    -5086.287115       0.0920       0.0126
+PreconLBFGS:   6  12:45:53    -5086.290200       0.0955       0.0118
+PreconLBFGS:   7  12:45:53    -5086.290896       0.0950       0.0111
+PreconLBFGS:   8  12:45:54    -5086.297676       0.0437       0.0029
+PreconLBFGS:   9  12:45:54    -5086.298214       0.0291       0.0013
+PreconLBFGS:  10  12:45:55    -5086.298234       0.0260       0.0012
+PreconLBFGS:  11  12:45:55    -5086.298240       0.0264       0.0012
+PreconLBFGS:  12  12:45:56    -5086.298297       0.0182       0.0005
+PreconLBFGS:  13  12:45:56    -5086.298341       0.0125       0.0001
+PreconLBFGS:  14  12:45:56    -5086.298345       0.0010       0.0002
+symmetry at end of relaxation at default tol 1e-6
+ase.spacegroup.symmetrize: prec 1e-06 got symmetry group number 1 , international (Hermann-Mauguin) P1 , Hall  P 1
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/atoms.py:967: VisibleDeprecationWarning: Use get_global_number_of_atoms() instead
+  warnings.warn('Use get_global_number_of_atoms() instead',
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.193380027602
+unrelaxed 001 surface formation energy 9.742873630907883e-12
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.16960386732
+unrelaxed 001 surface formation energy 0.001354786217362756
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.159085244635
+unrelaxed 001 surface formation energy 0.001954146449244752
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.15344366288
+unrelaxed 001 surface formation energy 0.0022756086644376778
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.139923223236
+unrelaxed 001 surface formation energy 0.003046015026660896
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.12224964515
+unrelaxed 001 surface formation energy 0.004053070814916345
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.09718787673
+unrelaxed 001 surface formation energy 0.005481112087804435
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.08402554923
+unrelaxed 001 surface formation energy 0.006231112909989802
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.079092518317
+unrelaxed 001 surface formation energy 0.006512201284338766
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.06618887089
+unrelaxed 001 surface formation energy 0.007247462291903676
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.046720910697
+unrelaxed 001 surface formation energy 0.008356763526733292
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.020952048406
+unrelaxed 001 surface formation energy 0.009825095621024545
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.016881648724
+unrelaxed 001 surface formation energy 0.010057030520672213
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.04248903645
+unrelaxed 001 surface formation energy 0.00859789938707715
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.076690188824
+unrelaxed 001 surface formation energy 0.006649088099777912
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.0937405114
+unrelaxed 001 surface formation energy 0.005677545950535333
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.086973636226
+unrelaxed 001 surface formation energy 0.006063128359321543
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.06824022277
+unrelaxed 001 surface formation energy 0.007130574484942668
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.06735167897
+unrelaxed 001 surface formation energy 0.0071812044803269024
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.078296888394
+unrelaxed 001 surface formation energy 0.006557536966537193
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.074901951244
+unrelaxed 001 surface formation energy 0.0067509834260306885
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.057296959138
+unrelaxed 001 surface formation energy 0.007754131125659638
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.02629388252
+unrelaxed 001 surface formation energy 0.009520713286021332
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.013423327757
+unrelaxed 001 surface formation energy 0.010254088644971415
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.012955141967
+unrelaxed 001 surface formation energy 0.010280766276823646
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.019576046365
+unrelaxed 001 surface formation energy 0.00990350140921428
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.025527878526
+unrelaxed 001 surface formation energy 0.00956436085719698
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.038801641025
+unrelaxed 001 surface formation energy 0.008808010372303039
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.06340688069
+unrelaxed 001 surface formation energy 0.007405982503187472
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.09429322382
+unrelaxed 001 surface formation energy 0.005646051917909721
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.111642515683
+unrelaxed 001 surface formation energy 0.004657474239696559
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.118204852402
+unrelaxed 001 surface formation energy 0.004283546609164043
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.130556568118
+unrelaxed 001 surface formation energy 0.0035797351486783363
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.145955736745
+unrelaxed 001 surface formation energy 0.0027022771815625947
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.168230003994
+unrelaxed 001 surface formation energy 0.0014330701398234614
+bulk cell energy -20345.193380027773
+expanded cell energy -20345.193380027802
+unrelaxed 001 surface formation energy -1.6583614690907033e-12
+============================================================
+Property calculation output:
+
+
+Summary of computed properties:
+{'slide_path': 0.5, 'es': [0.0, 0.0013547862076198824, 0.0019541464395018784, 0.002275608654694804, 0.0030460150169180225, 0.004053070805173471, 0.005481112078061561, 0.006231112900246928, 0.006512201274595892, 0.007247462282160802, 0.008356763516990419, 0.009825095611281672, 0.01005703051092934, 0.008597899377334278, 0.006649088090035038, 0.005677545940792459, 0.006063128349578669, 0.007130574475199794, 0.007181204470584028, 0.006557536956794319, 0.0067509834162878144, 0.007754131115916764, 0.009520713276278459, 0.010254088635228541, 0.010280766267080773, 0.009903501399471408, 0.009564360847454106, 0.008808010362560166, 0.007405982493444598, 0.005646051908166847, 0.0046574742299536846, 0.004283546599421169, 0.0035797351389354626, 0.002702277171819721, 0.0014330701300805878, -1.1401235099998586e-11]}
+============================================================
+
+###### START RUN Fri Jul 29 12:46:52 2022 ######
+Model GAP_bcms_13, Test slide-11b0-H-MoS2
+Test run at 2022-07-29 12:46
+
+model file: ../../models/GAP_bcms_13/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(init_args='Potential xml_label="GAP_2017_6_17_60_4_3_56_165"',
+                                               param_filename='gp_iter6_sparse9k.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='MoSx_rss_13.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/slide-11b0-H-MoS2/test.py
+============================================================
+from utilities import relax_config
+import numpy as np
+import model
+import os
+from ase.io import read, write
+
+n_steps = 35
+max_opening = 0.5
+min_opening = 0
+
+##########################
+
+
+bulk = read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'MoS2-2H.xyz'))
+bulk.set_calculator(model.calculator)
+
+fmax = 0.01
+bulk = relax_config(bulk, relax_pos=True, relax_cell=True, tol=fmax)
+
+
+# set up supercell
+bulk *= (2, 2, 1)
+
+def surface_slip_energy(bulk, slide):
+    Nat = bulk.get_number_of_atoms()
+
+    ebulk = bulk.get_potential_energy()
+    print('bulk cell energy', ebulk)
+    pos = bulk.get_scaled_positions()
+    pos[np.argwhere(pos[:, 2] > 0.5)] += [slide, -slide, 0]
+    bulk.set_scaled_positions(pos)
+    
+
+
+    # bulk.cell[2, :] += [0.0, 0.0, 0.0]
+    
+    eexp  = bulk.get_potential_energy()
+
+    print('expanded cell energy', eexp)
+    e_form = (eexp - ebulk) / (bulk.cell[1,1]*bulk.cell[0,0])
+    print('unrelaxed 001 surface formation energy', e_form)
+    return e_form
+
+
+slide_al = []
+
+slides = []
+slide_es = []
+for i in range(n_steps + 1):
+    slide = float(i)/float(n_steps)*(max_opening - min_opening) + min_opening
+    slides.append(slide)
+    bulk_copy = bulk.copy()
+    bulk_copy.set_calculator(model.calculator)
+    slide_al.append(bulk_copy)
+    slide_es.append(surface_slip_energy(bulk_copy, slide))
+
+write('slide_11b0.xyz', slide_al)
+
+properties = {'slide_path': slides, 'es': (slide_es - slide_es[0]).tolist()}
+============================================================
+relax_config symmetry before refinement at default tol 1.0e-6
+ase.spacegroup.symmetrize: prec 1e-06 got symmetry group number 194 , international (Hermann-Mauguin) P6_3/mmc , Hall  -P 6c 2c
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/optimize/precon/lbfgs.py:133: UserWarning: The system is likely too small to benefit from the standard preconditioner, hence it is disabled. To re-enable preconditioning, call `PreconLBFGS` by explicitly providing the kwarg `precon`
+  warnings.warn('The system is likely too small to benefit from '
+PreconLBFGS:   0  12:46:55    -5086.155657       0.5469       0.0104
+PreconLBFGS:   1  12:46:56    -5086.163951       0.2970       0.0064
+PreconLBFGS:   2  12:46:56    -5086.187150       0.5993       0.0092
+PreconLBFGS:   3  12:46:57    -5086.231166       0.4838       0.0155
+PreconLBFGS:   4  12:46:57    -5086.259369       0.0423       0.0056
+PreconLBFGS:   5  12:46:57    -5086.287115       0.0920       0.0126
+PreconLBFGS:   6  12:46:58    -5086.290200       0.0955       0.0118
+PreconLBFGS:   7  12:46:58    -5086.291187       0.0923       0.0109
+PreconLBFGS:   8  12:46:59    -5086.297562       0.0486       0.0033
+PreconLBFGS:   9  12:46:59    -5086.298207       0.0279       0.0013
+PreconLBFGS:  10  12:46:59    -5086.298235       0.0258       0.0012
+PreconLBFGS:  11  12:47:00    -5086.298238       0.0256       0.0012
+PreconLBFGS:  12  12:47:00    -5086.298345       0.0031       0.0001
+symmetry at end of relaxation at default tol 1e-6
+ase.spacegroup.symmetrize: prec 1e-06 got symmetry group number 1 , international (Hermann-Mauguin) P1 , Hall  P 1
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/atoms.py:967: VisibleDeprecationWarning: Use get_global_number_of_atoms() instead
+  warnings.warn('Use get_global_number_of_atoms() instead',
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.193381500485
+unrelaxed 001 surface formation energy 3.731721074582241e-12
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.16961737397
+unrelaxed 001 surface formation energy 0.0013542484971987212
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.159139273263
+unrelaxed 001 surface formation energy 0.0019513649991249745
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.153494030303
+unrelaxed 001 surface formation energy 0.00227307098602911
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.139972100744
+unrelaxed 001 surface formation energy 0.003043646446557905
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.122251625668
+unrelaxed 001 surface formation energy 0.004053484811943184
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.097108360253
+unrelaxed 001 surface formation energy 0.00548632642244733
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.08390784838
+unrelaxed 001 surface formation energy 0.006238585223290674
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.078971318104
+unrelaxed 001 surface formation energy 0.006519903734434906
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.066067469845
+unrelaxed 001 surface formation energy 0.007255256538305597
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.046619403132
+unrelaxed 001 surface formation energy 0.008363545329337193
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.02085451781
+unrelaxed 001 surface formation energy 0.00983181125145019
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.016818784523
+unrelaxed 001 surface formation energy 0.010061795960576924
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.042452160764
+unrelaxed 001 surface formation energy 0.008601024358739122
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.07661907266
+unrelaxed 001 surface formation energy 0.006653951364815272
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.093661177445
+unrelaxed 001 surface formation energy 0.005682771350510359
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.086874206216
+unrelaxed 001 surface formation energy 0.006069541112756767
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.068178251444
+unrelaxed 001 surface formation energy 0.007134969230508234
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.06736700492
+unrelaxed 001 surface formation energy 0.00718119981190712
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.078298144137
+unrelaxed 001 surface formation energy 0.006558265962045523
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.074879633103
+unrelaxed 001 surface formation energy 0.00675307696909707
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.05725777345
+unrelaxed 001 surface formation energy 0.0077572955281909805
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.026316031322
+unrelaxed 001 surface formation energy 0.009520575471706906
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.01349136272
+unrelaxed 001 surface formation energy 0.010251416057162187
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.01301309044
+unrelaxed 001 surface formation energy 0.010278671404118428
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.019627947997
+unrelaxed 001 surface formation energy 0.009901709899763234
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.02553729329
+unrelaxed 001 surface formation energy 0.009564953488483371
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.03880534049
+unrelaxed 001 surface formation energy 0.008808846045731962
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.06342227521
+unrelaxed 001 surface formation energy 0.007405998491658738
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.094346218313
+unrelaxed 001 surface formation energy 0.005643732862687103
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.111715374893
+unrelaxed 001 surface formation energy 0.004653915117220381
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.118284173164
+unrelaxed 001 surface formation energy 0.004279578397663774
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.13065487276
+unrelaxed 001 surface formation energy 0.00357460818644908
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.146028534717
+unrelaxed 001 surface formation energy 0.0026985078790589833
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.168301012018
+unrelaxed 001 surface formation energy 0.0014292641384616393
+bulk cell energy -20345.19338150055
+expanded cell energy -20345.19338150056
+unrelaxed 001 surface formation energy -6.219535124303735e-13
+============================================================
+Property calculation output:
+
+
+Summary of computed properties:
+{'slide_path': [0.0, 0.014285714285714285, 0.02857142857142857, 0.04285714285714286, 0.05714285714285714, 0.07142857142857142, 0.08571428571428572, 0.1, 0.11428571428571428, 0.12857142857142856, 0.14285714285714285, 0.15714285714285714, 0.17142857142857143, 0.18571428571428572, 0.2, 0.21428571428571427, 0.22857142857142856, 0.24285714285714285, 0.2571428571428571, 0.2714285714285714, 0.2857142857142857, 0.3, 0.3142857142857143, 0.32857142857142857, 0.34285714285714286, 0.35714285714285715, 0.37142857142857144, 0.38571428571428573, 0.4, 0.4142857142857143, 0.42857142857142855, 0.44285714285714284, 0.45714285714285713, 0.4714285714285714, 0.4857142857142857, 0.5], 'es': [0.0, 0.001354248493467, 0.0019513649953932534, 0.0022730709822973887, 0.003043646442826184, 0.0040534848082114635, 0.00548632641871561, 0.006238585219558953, 0.006519903730703185, 0.007255256534573876, 0.008363545325605471, 0.009831811247718468, 0.010061795956845202, 0.0086010243550074, 0.006653951361083551, 0.0056827713467786384, 0.006069541109025046, 0.007134969226776513, 0.007181199808175399, 0.006558265958313802, 0.0067530769653653495, 0.00775729552445926, 0.009520575467975185, 0.010251416053430466, 0.010278671400386706, 0.009901709896031513, 0.00956495348475165, 0.00880884604200024, 0.007405998487927017, 0.005643732858955382, 0.00465391511348866, 0.004279578393932054, 0.003574608182717359, 0.0026985078753272622, 0.0014292641347299182, -4.353674587012615e-12]}
+============================================================
