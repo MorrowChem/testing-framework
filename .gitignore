@@ -6,3 +6,7 @@ temp/
 example_models/Si/models/GAP/*
 !example_models/Si/models/GAP/README
 .DS_Store
+example_models/Si/GAP-18/*
+example_models/Si/**/*.mtp
+example_models/MoS/models/**/*.xml*
+

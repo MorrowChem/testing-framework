@@ -6,7 +6,7 @@ import numpy as np
 import model 
 
 def do_symmetric_surface(test_dir, in_plane_supercell=[1,1], pert_pos=0.0):
-    assert len(supercell) == 2
+    assert len(in_plane_supercell) == 2
 
     surf = ase.io.read(test_dir+"/surface.xyz", format="extxyz")
     surf *= list(in_plane_supercell) + [1]

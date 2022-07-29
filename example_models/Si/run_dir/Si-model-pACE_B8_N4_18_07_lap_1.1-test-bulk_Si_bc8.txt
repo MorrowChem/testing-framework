@@ -159,3 +159,82 @@ Traceback (most recent call last):
   File "/Users/Cas/miniconda3/lib/python3.8/site-packages/ase-3.20.0b1-py3.8.egg/ase/optimize/precon/lbfgs.py", line 369, in line_search
     raise RuntimeError('Wolff lineSearch failed!')
 RuntimeError: Wolff lineSearch failed!
+
+###### START RUN Wed Jul 13 16:02:10 2022 ######
+Model pACE_B8_N4_18_07_lap_1.1, Test bulk_Si_bc8
+Test run at 2022-07-13 16:02
+
+model file: /home/magnetite/vld/hert5155/applications/testing-framework/example_models/Si/run_dir/../models/pACE_B8_N4_18_07_lap_1.1/model.py
+============================================================
+import os
+from ase.calculators.lammpsrun import LAMMPS
+
+os.environ["ASE_LAMMPSRUN_COMMAND"]="/Users/Cas/gits/lammps-ace/src/lmp_serial"
+
+model_dir = os.path.dirname(os.path.realpath(__file__))
+
+parameters = {'pair_style': 'pace',
+              'pair_coeff': ['* * Si_B8_N4_18_07_rid_1.1_2B+ACE.ace Si']}
+
+files = [os.path.join(model_dir, "Si_B8_N4_18_07_rid_1.1_2B+ACE.ace")]
+
+calculator = LAMMPS(parameters=parameters, files=files)
+
+name="ACE"
+
+no_checkpoint = True
+============================================================
+test file: /home/magnetite/vld/hert5155/applications/testing-framework/scripts/../tests/Si/bulk_Si_bc8/test.py
+============================================================
+import os.path, lattice
+
+properties = lattice.do_lattice(os.path.abspath(os.path.dirname(__file__)), 'cubic')
+============================================================
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/calculators/lammpsrun.py:191: UserWarning: You are using an old syntax to set 'parameters'.
+Please use LAMMPSRUN.set().
+  warnings.warn(self.legacy_warn_string.format("parameters"))
+relax bulk
+relax_config failed to read base run config from  Si-model-None-test-bulk_Si_bc8-bulk-relaxed.xyz
+relax_config symmetry before refinement at default tol 1.0e-6
+ase.spacegroup.symmetrize: prec 1e-06 got symmetry group number 206 , international (Hermann-Mauguin) Ia-3 , Hall  -I 2b 2c 3
+relax_config symmetry after refinement
+ase.spacegroup.symmetrize: prec 0.01 got symmetry group number 206 , international (Hermann-Mauguin) Ia-3 , Hall  -I 2b 2c 3
+relax_config trying to maintain symmetry
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/optimize/precon/lbfgs.py:133: UserWarning: The system is likely too small to benefit from the standard preconditioner, hence it is disabled. To re-enable preconditioning, call `PreconLBFGS` by explicitly providing the kwarg `precon`
+  warnings.warn('The system is likely too small to benefit from '
+Traceback (most recent call last):
+  File "/home/magnetite/vld/hert5155/applications/testing-framework/scripts/run-model-test.py", line 139, in <module>
+    import test  # import and run the current test
+  File "/home/magnetite/vld/hert5155/applications/testing-framework/scripts/../tests/Si/bulk_Si_bc8/test.py", line 3, in <module>
+    properties = lattice.do_lattice(os.path.abspath(os.path.dirname(__file__)), 'cubic')
+  File "/home/magnetite/vld/hert5155/applications/testing-framework/scripts/../share/lattice.py", line 90, in do_lattice
+    bulk = relax_config(bulk, relax_pos=True, relax_cell=True, tol=tol, save_traj=True, method=method,
+  File "/home/magnetite/vld/hert5155/applications/testing-framework/scripts/../share/utilities.py", line 237, in relax_config
+    opt.run(tol, max_steps)
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/optimize/precon/lbfgs.py", line 365, in run
+    return Optimizer.run(self, fmax, steps)
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/optimize/optimize.py", line 269, in run
+    return Dynamics.run(self)
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/optimize/optimize.py", line 156, in run
+    for converged in Dynamics.irun(self):
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/optimize/optimize.py", line 122, in irun
+    self.atoms.get_forces()
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/constraints.py", line 2614, in get_forces
+    forces = UnitCellFilter.get_forces(self, **kwargs)
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/constraints.py", line 2434, in get_forces
+    stress = self.atoms.get_stress(**kwargs)
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/atoms.py", line 820, in get_stress
+    stress = self._calc.get_stress(self)
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/calculators/abc.py", line 26, in get_stress
+    return self.get_property('stress', atoms)
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/calculators/calculator.py", line 737, in get_property
+    self.calculate(atoms, [name], system_changes)
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/calculators/lammpsrun.py", line 321, in calculate
+    self.run()
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/calculators/lammpsrun.py", line 434, in run
+    self._lmp_handle = Popen(
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/subprocess.py", line 858, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/u/vld/hert5155/anaconda3/lib/python3.8/subprocess.py", line 1706, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/Cas/gits/lammps-ace/src/lmp_serial'
