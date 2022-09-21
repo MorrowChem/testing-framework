@@ -211,7 +211,7 @@ def relax_config(atoms, relax_pos, relax_cell, tol=1e-3, method='lbfgs', max_ste
             atoms_cell = atoms
         atoms.info["n_minim_iter"] = 0
         if method == 'sd2':
-            (traj, run_stat) = sd2_run("", atoms_cell, tol, lambda i : sd2_converged(i, atoms_cell, tol), max_steps)
+            (traj, run_stat) = sd2_run("", atoms_cell, tol, lambda i : sd2_converged(i, atoms_cell, tol), max_steps, max_cell_vec_change_ratio=2.0) # JDM
             if save_traj is not None:
                 write(traj_file, traj)
         else:
@@ -355,7 +355,7 @@ def robust_minim_cell_pos(atoms, final_tol, label="robust_minim", max_sd2_iter=5
             if hasattr(model, "fix_cell_dependence"):
                 model.fix_cell_dependence(atoms)
             relax_config(atoms, relax_pos=True, relax_cell=True, tol=final_tol, max_steps=max_lbfgs_iter,
-                save_traj=True, method='lbfgs', keep_symmetry=keep_symmetry, config_label=f'{label}.{i_iter}' )
+                save_traj=True, method='lbfgs', keep_symmetry=keep_symmetry, config_label=f'{label}.{i_iter}', max_cell_vec_change_ratio=2.0)
             done = (atoms.info["n_minim_iter"] < max_lbfgs_iter)
             print("robust_minim relax_configs LBFGS finished in ",atoms.info["n_minim_iter"],"iters, max", max_lbfgs_iter)
         except:
