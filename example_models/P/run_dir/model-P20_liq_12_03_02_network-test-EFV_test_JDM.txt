@@ -1,0 +1,156 @@
+
+###### START RUN Wed Sep 21 11:47:54 2022 ######
+Model P20_liq_12_03_02_network, Test EFV_test_JDM
+Test run at 2022-09-21 11:47
+
+model file: ../../models/P20_liq_12_03_02_network/model.py
+============================================================
+Traceback (most recent call last):
+  File "../../../scripts/run-model-test.py", line 118, in <module>
+    sys.stdout.write(open(model_file).read())
+FileNotFoundError: [Errno 2] No such file or directory: '../../models/P20_liq_12_03_02_network/model.py'
+
+###### START RUN Wed Sep 21 13:21:29 2022 ######
+Model P20_liq_12_03_02_network, Test EFV_test_JDM
+Test run at 2022-09-21 13:21
+
+model file: ../../models/P20_liq_12_03_02_network/model.py
+============================================================
+Traceback (most recent call last):
+  File "../../../scripts/run-model-test.py", line 118, in <module>
+    sys.stdout.write(open(model_file).read())
+FileNotFoundError: [Errno 2] No such file or directory: '../../models/P20_liq_12_03_02_network/model.py'
+
+###### START RUN Wed Sep 21 13:30:01 2022 ######
+Model P20_liq_12_03_02_network, Test EFV_test_JDM
+Test run at 2022-09-21 13:30
+
+model file: ../../models/P20_liq_12_03_02_network/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_liq_12_03_02_network', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_liq_12_03_02_network')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P20_liq_12_03_01_liqP4_complement.xyz", "P20_liq_12_03_02_network_complement.xyz",
+                "P20_norss_complement.xyz", "P20_random_kfolds_big_complement.xyz",
+                "P20_random_kfolds_small_complement.xyz",  "P20_rss_3c_complement.xyz",
+                "P_test_set.xyz", "p_test_set.xyz"]
+
+for filename in filenamelist:
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+Traceback (most recent call last):
+  File "../../../scripts/run-model-test.py", line 127, in <module>
+    import model # import and run the current model
+  File "../../models/P20_liq_12_03_02_network/model.py", line 19, in <module>
+    calculator = Potential(param_filename='P20_liq_12_03_02_network')
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential.py", line 81, in __init__
+    self._quip_potential = quippy.potential_module.Potential.filename_initialise(args_str=args_str,
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential_module.py", line 134, in filename_initialise
+    result = quippy._quippy.f90wrap_potential_filename_initialise(args_str=args_str, param_filename=param_filename, \
+RuntimeError: Traceback (most recent call last)
+  File "/u/vld/hert5155/QUIP_new/src/libAtoms/System.f95", line 532 kind unspecified
+    IO error opening "P20_liq_12_03_02_network" on unit 7, error number: 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+Exception ignored in: <function Potential.__del__ at 0x7f3d08219a60>
+Traceback (most recent call last):
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential_module.py", line 259, in __del__
+    quippy._quippy.f90wrap_potential_finalise(this=self._handle, error=error)
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'
+
+###### START RUN Wed Sep 21 15:10:43 2022 ######
+Model P20_liq_12_03_02_network, Test EFV_test_JDM
+Test run at 2022-09-21 15:10
+
+model file: ../../models/P20_liq_12_03_02_network/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_liq_12_03_02_network', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_liq_12_03_02_network')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P20_liq_12_03_01_liqP4_complement.xyz", "P20_liq_12_03_02_network_complement.xyz",
+                "P20_norss_complement.xyz", "P20_random_kfolds_big_complement.xyz",
+                "P20_random_kfolds_small_complement.xyz",  "P20_rss_3c_complement.xyz",
+                "P_test_set.xyz"]
+
+for filename in filenamelist:
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+Traceback (most recent call last):
+  File "../../../scripts/run-model-test.py", line 127, in <module>
+    import model # import and run the current model
+  File "../../models/P20_liq_12_03_02_network/model.py", line 19, in <module>
+    calculator = Potential(param_filename='P20_liq_12_03_02_network')
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential.py", line 81, in __init__
+    self._quip_potential = quippy.potential_module.Potential.filename_initialise(args_str=args_str,
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential_module.py", line 134, in filename_initialise
+    result = quippy._quippy.f90wrap_potential_filename_initialise(args_str=args_str, param_filename=param_filename, \
+RuntimeError: Traceback (most recent call last)
+  File "/u/vld/hert5155/QUIP_new/src/libAtoms/System.f95", line 537 kind unspecified
+    IO error opening "P20_liq_12_03_02_network" on unit 7, error number: 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+Exception ignored in: <function Potential.__del__ at 0x7f86d93a8e50>
+Traceback (most recent call last):
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential_module.py", line 259, in __del__
+    quippy._quippy.f90wrap_potential_finalise(this=self._handle, error=error)
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'

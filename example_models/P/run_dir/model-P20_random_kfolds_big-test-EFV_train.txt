@@ -1,0 +1,67 @@
+
+###### START RUN Wed Sep 21 17:00:37 2022 ######
+Model P20_random_kfolds_big, Test EFV_train
+Test run at 2022-09-21 17:00
+
+model file: ../../models/P20_random_kfolds_big/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_random_kfolds_big', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_random_kfolds_big')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_train/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P20_liq_12_03_01_liqP4.xyz", "P20_liq_12_03_02_network.xyz",
+                "P20_norss.xyz", "P20_random_kfolds_big.xyz",
+                "P20_random_kfolds_small.xyz",  "P20_rss_3c.xyz"
+                ]
+
+for filename in filenamelist:
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+Traceback (most recent call last):
+  File "../../../scripts/run-model-test.py", line 127, in <module>
+    import model # import and run the current model
+  File "../../models/P20_random_kfolds_big/model.py", line 19, in <module>
+    calculator = Potential(param_filename='P20_random_kfolds_big')
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential.py", line 81, in __init__
+    self._quip_potential = quippy.potential_module.Potential.filename_initialise(args_str=args_str,
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential_module.py", line 134, in filename_initialise
+    result = quippy._quippy.f90wrap_potential_filename_initialise(args_str=args_str, param_filename=param_filename, \
+RuntimeError: Traceback (most recent call last)
+  File "/u/vld/hert5155/QUIP_new/src/libAtoms/System.f95", line 537 kind unspecified
+    IO error opening "P20_random_kfolds_big" on unit 7, error number: 2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+Exception ignored in: <function Potential.__del__ at 0x7f921a98de50>
+Traceback (most recent call last):
+  File "/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp/quippy/potential_module.py", line 259, in __del__
+    quippy._quippy.f90wrap_potential_finalise(this=self._handle, error=error)
+TypeError: int() argument must be a string, a bytes-like object or a number, not 'NoneType'

@@ -1,0 +1,5 @@
+nohup: ignoring input
+Ignoring PCI device with non-16bit domain.
+Pass --enable-32bits-pci-domain to configure to support such devices
+(warning: it would break the library ABI, don't enable unless really needed).
+share_dir /home/magnetite/vld/hert5155/applications/testing-framework/scripts/../share

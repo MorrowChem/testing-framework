@@ -1,0 +1,3 @@
+cat model-GAP20-test-RSS.txt | grep -o completed | echo $(wc -l) - 33 | bc
+cat model-GAP20-test-RSS.txt | grep -o completed | echo $(wc -l) - 33 | bc
+hello

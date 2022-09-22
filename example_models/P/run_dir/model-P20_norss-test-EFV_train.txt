@@ -1,0 +1,59 @@
+
+###### START RUN Wed Sep 21 17:00:37 2022 ######
+Model P20_norss, Test EFV_train
+Test run at 2022-09-21 17:00
+
+model file: ../../models/P20_norss/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_norss.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_norss.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_train/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P20_liq_12_03_01_liqP4.xyz", "P20_liq_12_03_02_network.xyz",
+                "P20_norss.xyz", "P20_random_kfolds_big.xyz",
+                "P20_random_kfolds_small.xyz",  "P20_rss_3c.xyz"
+                ]
+
+for filename in filenamelist:
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+/u/vld/hert5155/anaconda3/lib/python3.8/site-packages/ase/io/extxyz.py:1000: UserWarning: write_xyz() overwriting array "forces" present in atoms.arrays with stored results from calculator
+  warnings.warn('write_xyz() overwriting array "{0}" present '
+============================================================
+Property calculation output:
+
+
+Summary of computed properties:
+{'files': ['P20_liq_12_03_01_liqP4.xyz', 'P20_liq_12_03_02_network.xyz', 'P20_norss.xyz', 'P20_random_kfolds_big.xyz', 'P20_random_kfolds_small.xyz', 'P20_rss_3c.xyz']}
+============================================================

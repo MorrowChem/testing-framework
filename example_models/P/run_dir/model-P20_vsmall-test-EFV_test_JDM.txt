@@ -1,0 +1,352 @@
+
+###### START RUN Tue Sep 20 16:17:44 2022 ######
+Model P20_vsmall, Test EFV_test_JDM
+Test run at 2022-09-20 16:17
+
+model file: ../models/P20_vsmall/model.py
+============================================================
+Traceback (most recent call last):
+  File "../../../scripts/run-model-test.py", line 118, in <module>
+    sys.stdout.write(open(model_file).read())
+FileNotFoundError: [Errno 2] No such file or directory: '../models/P20_vsmall/model.py'
+
+###### START RUN Tue Sep 20 16:18:42 2022 ######
+Model P20_vsmall, Test EFV_test_JDM
+Test run at 2022-09-20 16:18
+
+model file: ../../models/P20_vsmall/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_vsmall.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_vsmall.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P_test_set.xyz"] + os.listdir(path_of_file(__file__))
+
+for filename in filenamelist: 
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+
+###### START RUN Tue Sep 20 16:20:21 2022 ######
+Model P20_vsmall, Test EFV_test_JDM
+Test run at 2022-09-20 16:20
+
+model file: ../../models/P20_vsmall/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_vsmall.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_vsmall.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P_test_set.xyz"] + os.listdir(path_of_file(__file__))
+
+for filename in filenamelist: 
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+
+###### START RUN Wed Sep 21 11:47:54 2022 ######
+Model P20_vsmall, Test EFV_test_JDM
+Test run at 2022-09-21 11:47
+
+model file: ../../models/P20_vsmall/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_vsmall.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_vsmall.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P_test_set.xyz"] + os.listdir(path_of_file(__file__))
+
+for filename in filenamelist: 
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+
+###### START RUN Wed Sep 21 13:21:29 2022 ######
+Model P20_vsmall, Test EFV_test_JDM
+Test run at 2022-09-21 13:21
+
+model file: ../../models/P20_vsmall/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_vsmall.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_vsmall.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P20_liq_12_03_01_liqP4_complement.xyz", "P20_liq_12_03_02_network_complement.xyz",
+                "P20_norss_complement.xyz", "P20_random_kfolds_big_complement.xyz",
+                "P20_random_kfolds_small_complement.xyz",  "P20_rss_3c_complement.xyz",
+                "P_test_set.xyz", "p_test_set.xyz"]
+
+for filename in filenamelist:
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+
+###### START RUN Wed Sep 21 13:33:19 2022 ######
+Model P20_vsmall, Test EFV_test_JDM
+Test run at 2022-09-21 13:33
+
+model file: ../../models/P20_vsmall/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_vsmall.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_vsmall.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P20_liq_12_03_01_liqP4_complement.xyz", "P20_liq_12_03_02_network_complement.xyz",
+                "P20_norss_complement.xyz", "P20_random_kfolds_big_complement.xyz",
+                "P20_random_kfolds_small_complement.xyz",  "P20_rss_3c_complement.xyz",
+                "P_test_set.xyz", "p_test_set.xyz"]
+
+for filename in filenamelist:
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+
+###### START RUN Wed Sep 21 13:33:25 2022 ######
+Model P20_vsmall, Test EFV_test_JDM
+Test run at 2022-09-21 13:33
+
+model file: ../../models/P20_vsmall/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_vsmall.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_vsmall.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P20_liq_12_03_01_liqP4_complement.xyz", "P20_liq_12_03_02_network_complement.xyz",
+                "P20_norss_complement.xyz", "P20_random_kfolds_big_complement.xyz",
+                "P20_random_kfolds_small_complement.xyz",  "P20_rss_3c_complement.xyz",
+                "P_test_set.xyz", "p_test_set.xyz"]
+
+for filename in filenamelist:
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================
+
+###### START RUN Wed Sep 21 14:11:38 2022 ######
+Model P20_vsmall, Test EFV_test_JDM
+Test run at 2022-09-21 14:11
+
+model file: ../../models/P20_vsmall/model.py
+============================================================
+import os
+
+import sys; sys.path.insert(0, '/home/magnetite/vld/hert5155/QUIP_new/build/linux_x86_64_gfortran_openmp')
+from quippy.potential import Potential
+import builtins
+
+orig_dir = os.getcwd()
+model_dir = os.path.dirname(__file__)
+if model_dir != '':
+    os.chdir(model_dir)
+
+#if os.path.exists('gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2'):
+#    os.system('bunzip2 gp_iter6_sparse9k.xml.sparseX.GAP_2017_6_17_60_4_3_56_1651.bz2')
+
+try:
+    if hasattr(builtins, 'mpi_glob'):
+        calculator = Potential(param_filename='P20_vsmall.xml', mpi_obj=mpi_glob)
+    else:
+        calculator = Potential(param_filename='P20_vsmall.xml')
+
+    Potential.__str__ = lambda self: '<GAP Potential>'
+finally:
+    os.chdir(orig_dir)
+
+no_checkpoint = True
+
+name = 'GAP'
+============================================================
+test file: ../../tests/EFV_test_JDM/test.py
+============================================================
+from utilities import path_of_file, evaluate_file
+import os
+
+filenamelist = ["P20_liq_12_03_01_liqP4_complement.xyz", "P20_liq_12_03_02_network_complement.xyz",
+                "P20_norss_complement.xyz", "P20_random_kfolds_big_complement.xyz",
+                "P20_random_kfolds_small_complement.xyz",  "P20_rss_3c_complement.xyz",
+                "P_test_set.xyz", "p_test_set.xyz"]
+
+for filename in filenamelist:
+    evaluate_file(path_of_file(__file__)+"/"+filename)
+
+properties = {"files": filenamelist}
+============================================================

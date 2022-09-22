@@ -1,0 +1,1 @@
+for i in ../models/dir_u* ../models/ind_u* ../models/P20_*; do echo $(basename $i); export OMP_NUM_THREADS=2 && python ../../../scripts/run-model-test.py $(basename $i) EFV_test_JDM & disown; done

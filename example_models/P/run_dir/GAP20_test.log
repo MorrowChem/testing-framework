@@ -1,0 +1,3 @@
+share_dir /home/magnetite/vld/hert5155/applications/testing-framework/scripts/../share
+WARNING: Potential_initialise using default init_args "Potential xml_label=GAP_2020_5_23_60_1_23_12_19"
+WARNING: Potential_calc: cutoff of Atoms object (-1.0000000000000000) < Potential cutoff (20.000000000000000) - increasing it now
