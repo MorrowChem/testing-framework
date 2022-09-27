@@ -38,7 +38,7 @@ parser.add_argument('--force','-f', action='store_true', help='force rerunning o
 parser.add_argument('--base_model','-B', type=str, action='store', help='optional base model to start from')
 parser.add_argument('--no_redirect_io','-N', action='store_true', help='do not redirect io')
 parser.add_argument('--no_append_log', dest='append_log', action='store_false', help='overwrite log (.txt) file, rather than appending')
-parser.add_argument('--index', dest='index', action='store', help='slice for indexing structures, e.g. 0:10')
+parser.add_argument('--index', dest='index', action='store', const=':', type=str, help='slice for indexing structures, e.g. 0:10')
 args = parser.parse_args()
 
 model_path = os.path.split(args.model)[0]
