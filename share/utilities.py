@@ -356,6 +356,7 @@ def robust_minim_cell_pos(atoms, final_tol, label="robust_minim", max_sd2_iter=5
         try:
             if str(type(model.calculator)) == "<class 'ase.calculators.castep.Castep'>":
                 model.calculator._label = '_'.join(model.calculator._label.split('_')[:-1]) + f'_{i_iter}'
+                print(f'Starting job {i_iter}')
             if hasattr(model, "fix_cell_dependence"):
                 model.fix_cell_dependence(atoms)
             relax_config(atoms, relax_pos=True, relax_cell=True, tol=final_tol, max_steps=max_lbfgs_iter,
