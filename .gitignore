@@ -23,3 +23,5 @@ example_models/MoS/run_dir/**
 example_models/MoS/run_dir/*
 example_models/MoS/run_dir/*/
 example_models/MoS/run_dir/**/*
+example_models/SiO2/run_dir/**/*
+example_models/SiO2/models/**/*.xml*
