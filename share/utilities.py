@@ -135,7 +135,8 @@ def sd2_converged(minim_ind, atoms, fmax, smax=None):
 
 def relax_config(atoms, relax_pos, relax_cell, tol=1e-3, method='lbfgs', max_steps=200, save_traj=False, constant_volume=False,
     refine_symmetry_tol=None, keep_symmetry=False, strain_mask = None, config_label=None, from_base_model=False, save_config=False,
-    try_restart=False, fix_cell_dependence=False, applied_P=0.0, hydrostatic_strain=False, **kwargs):
+    try_restart=False, fix_cell_dependence=False, applied_P=0.0, hydrostatic_strain=False, 
+    max_cell_vec_change_ratio=2.0, **kwargs):
 
     # get from base model if requested
     import model
@@ -211,7 +212,7 @@ def relax_config(atoms, relax_pos, relax_cell, tol=1e-3, method='lbfgs', max_ste
             atoms_cell = atoms
         atoms.info["n_minim_iter"] = 0
         if method == 'sd2':
-            (traj, run_stat) = sd2_run("", atoms_cell, tol, lambda i : sd2_converged(i, atoms_cell, tol), max_steps, max_cell_vec_change_ratio=2.0) # JDM
+            (traj, run_stat) = sd2_run("", atoms_cell, tol, lambda i : sd2_converged(i, atoms_cell, tol), max_steps, max_cell_vec_change_ratio=max_cell_vec_change_ratio) # JDM
             if save_traj is not None:
                 write(traj_file, traj)
         else:
@@ -339,7 +340,7 @@ def evaluate(atoms, do_energy=True, do_forces=True, do_stress=True, do_predictiv
 
     return atoms
 
-def robust_minim_cell_pos(atoms, final_tol, label="robust_minim", max_sd2_iter=50, sd2_tol=1.0, max_lbfgs_iter=20, max_n_lbfgs=50, keep_symmetry=True):
+def robust_minim_cell_pos(atoms, final_tol, label="robust_minim", max_sd2_iter=50, sd2_tol=1.0, max_lbfgs_iter=20, max_n_lbfgs=50, keep_symmetry=True, max_cell_vec_change_ratio=2.0):
     import model
 
     # do each minim at fixed cell-dependent model params (e.g. k-point mesh)
@@ -348,7 +349,8 @@ def robust_minim_cell_pos(atoms, final_tol, label="robust_minim", max_sd2_iter=5
     if hasattr(model, "fix_cell_dependence"):
         model.fix_cell_dependence(atoms)
     relax_config(atoms, relax_pos=True, relax_cell=True, tol=sd2_tol, max_steps=max_sd2_iter,
-        save_traj=True, method='sd2', keep_symmetry=keep_symmetry, config_label=label )
+        save_traj=True, method='sd2', keep_symmetry=keep_symmetry, config_label=label,
+        max_cell_vec_change_ratio=max_cell_vec_change_ratio )
 
     done=False
     i_iter = 0
@@ -360,7 +362,7 @@ def robust_minim_cell_pos(atoms, final_tol, label="robust_minim", max_sd2_iter=5
             if hasattr(model, "fix_cell_dependence"):
                 model.fix_cell_dependence(atoms)
             relax_config(atoms, relax_pos=True, relax_cell=True, tol=final_tol, max_steps=max_lbfgs_iter,
-                save_traj=True, method='lbfgs', keep_symmetry=keep_symmetry, config_label=f'{label}.{i_iter}', max_cell_vec_change_ratio=2.0)
+                save_traj=True, method='lbfgs', keep_symmetry=keep_symmetry, config_label=f'{label}.{i_iter}', max_cell_vec_change_ratio=max_cell_vec_change_ratio)
             done = (atoms.info["n_minim_iter"] < max_lbfgs_iter)
             print("robust_minim relax_configs LBFGS finished in ",atoms.info["n_minim_iter"],"iters, max", max_lbfgs_iter)
         except:

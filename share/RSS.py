@@ -4,14 +4,16 @@ from utilities import robust_minim_cell_pos
 import numpy as np
 import traceback
 
-def do_RSS(initial_configs_file, index=':', tol=0.01, ps=0.0):
+print(__file__)
+
+def do_RSS(initial_configs_file, index=':', tol=0.01, ps=0.0, max_cell_vec_change_ratio=2.0):
     import model
 
     ats = ase.io.read(initial_configs_file, index)
     range_slice_args = [ None if i == '' else int(i) for i in index.split(':')]
 
     print("got index ", index, "range_slice_args" ,range_slice_args)
-    print("using i_config ", range(len(ats))[slice(*range_slice_args)])
+    # print("using i_config ", range(len(ats))[slice(*range_slice_args)])
 
     energies = []
     volumes = []
@@ -25,7 +27,7 @@ def do_RSS(initial_configs_file, index=':', tol=0.01, ps=0.0):
         try:
             if str(type(model.calculator)) == "<class 'ase.calculators.castep.Castep'>":
                 model.calculator._label = str(i_config)
-            robust_minim_cell_pos(at, tol, "RSS_%04d" % i_config)
+            robust_minim_cell_pos(at, tol, "RSS_%04d" % i_config, max_cell_vec_change_ratio=max_cell_vec_change_ratio)
             print("RSS completed minimization", flush=True)
             if hasattr(model, "fix_cell_dependence"):
                 model.fix_cell_dependence()
