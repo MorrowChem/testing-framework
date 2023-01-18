@@ -74,6 +74,7 @@ def sd2_run(log_prefix, config_minim, tol, converged, max_iter=1000, max_cell_ve
                 return_stat="failed"
                 break
 
+
         config_minim.set_positions(x)
         if exception_if_invalid_config is not None:
             exception_if_invalid_config(config_minim)
@@ -85,6 +86,9 @@ def sd2_run(log_prefix, config_minim, tol, converged, max_iter=1000, max_cell_ve
             traj.append(config_minim.atoms.copy())
         except:
             traj.append(config_minim.copy())
+        if True is not None:
+            traj_file = run_root+'--traj.xyz'
+            write(traj_file, traj)
 
         if done:
             print(log_prefix,"SD2: i {} E {} {} {}".format(i_minim, E, config_minim.log_message, done))
@@ -207,7 +211,8 @@ def relax_config(atoms, relax_pos, relax_cell, tol=1e-3, method='lbfgs', max_ste
             atoms.set_constraint(FixAtoms(np.where(atoms.arrays['move_mask'] == 0)[0]))
         if relax_cell:
             atoms_cell = ExpCellFilter(atoms, mask=strain_mask, constant_volume=constant_volume,
-                                       scalar_pressure=applied_P*GPa, hydrostatic_strain=hydrostatic_strain)
+                                       scalar_pressure=applied_P*GPa, hydrostatic_strain=hydrostatic_strain,
+                                       cell_factor=len(atoms)*10)
         else:
             atoms_cell = atoms
         atoms.info["n_minim_iter"] = 0
@@ -311,8 +316,14 @@ def evaluate(atoms, do_energy=True, do_forces=True, do_stress=True, do_predictiv
         except AttributeError:
             pass
 
-    atoms.set_calculator(model.calculator)
+    try:
+        # print(f"calc args are {model.calculator.calc_args}", flush=True)
+        if 'local_energy' in model.calculator.calc_args:
+            do_local_energies=True
+    except AttributeError:
+        pass
 
+    atoms.set_calculator(model.calculator)
     stress = None
     if do_stress:
         stress = atoms.get_stress()
@@ -333,6 +344,13 @@ def evaluate(atoms, do_energy=True, do_forces=True, do_stress=True, do_predictiv
 
     if do_predictive_error:
         atoms.arrays["predictive_error"] = np.sqrt(model.calculator.results["predictive_error"])
+        try:
+            model.calculator.set_calc_args(orig_calc_args)
+        except AttributeError:
+            pass
+
+    if do_local_energies:
+        atoms.arrays["local_energies"] = model.calculator.extra_results["atoms"]["T"]
         try:
             model.calculator.set_calc_args(orig_calc_args)
         except AttributeError:
