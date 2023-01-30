@@ -4,10 +4,11 @@ import numpy as np
 from ase.calculators.vasp import Vasp
 
 mydir=os.path.abspath(os.path.dirname(__file__))
+relax=True
 
 # VASP KSPACING units
 kspacing_value=0.15
-nmpi=20
+nmpi=8
 
 # keywords related to this model (except k-points, which are handled separately)
 vasp_keywords = { 'encut' : 300.0, 'xc' : 'PBE', 'ismear' : 0, 'sigma' : 0.1, 

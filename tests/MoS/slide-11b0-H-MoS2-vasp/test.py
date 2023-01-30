@@ -2,6 +2,7 @@ from utilities import relax_config
 import numpy as np
 import model
 import os
+from os.path import join
 from ase.io import read, write
 
 n_steps = 12
@@ -15,15 +16,33 @@ bulk = read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'MoS2-2H.xy
 bulk.set_calculator(model.calculator)
 
 fmax = 0.01
-bulk = relax_config(bulk, relax_pos=True, relax_cell=True, tol=fmax)
+
+### relax bulk with VASP internal calculator
+if hasattr(model, "relax"):
+    if model.relax:
+        print("Relaxing bulk")
+        orig_dir = './'
+        model.calculator.set(ibrion=2, nsw=100, ediffg=-0.005, kspacing=0.3, directory='geom_relax') 
+        
+        if not os.path.exists(join(model.calculator.directory, 'CONTCAR')):
+            bulk.calc = model.calculator
+            bulk.get_potential_energy()
+        else:
+            print('Relaxation already done, reading and skipping')
+
+        bulk = read(join(model.calculator.directory, "CONTCAR"), index=-1)
+        model.calculator.set(ibrion=-1, nsw=-1, kspacing=model.kspacing_value)
+        print('Bulk successfully relaxed')
+else:
+    print("Skipping bulk relaxation, assuming already relaxed")
 
 
 # set up supercell
-bulk *= (2, 2, 1)
+# bulk *= (2, 2, 1)
 
 def surface_slip_energy(bulk, slide):
+    # TODO implement a version that relaxes the surface at each step
     Nat = bulk.get_number_of_atoms()
-
     ebulk = bulk.get_potential_energy()
     print('bulk cell energy', ebulk)
     pos = bulk.get_scaled_positions()
@@ -46,10 +65,11 @@ slide_al = []
 
 slides = []
 slide_es = []
-for i in range(n_steps + 1):
-    slide = float(i)/float(n_steps)*(max_opening - min_opening) + min_opening
+for i, slide in enumerate(np.linspace(min_opening, max_opening, n_steps)):
+    print(f'doing slide {i:00d} {slide:7.3f}')
     slides.append(slide)
     bulk_copy = bulk.copy()
+    model.calculator.set(directory=f'{i}')
     bulk_copy.set_calculator(model.calculator)
     slide_al.append(bulk_copy)
     slide_es.append(surface_slip_energy(bulk_copy, slide))

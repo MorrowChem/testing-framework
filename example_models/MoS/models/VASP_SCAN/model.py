@@ -12,7 +12,7 @@ kspacing_value=0.15
 nmpi=8
 
 # keywords related to this model (except k-points, which are handled separately)
-vasp_keywords = { 'encut' : 300.0, 'xc' : 'PBE', 'ismear' : 0, 'sigma' : 0.1, 
+vasp_keywords = { 'encut' : 300.0, 'metagga' : 'SCAN', 'ismear' : 0, 'sigma' : 0.1, 
     'nelm' : 150, 'algo' : 'normal', 'amix' : 0.03, 'bmix' : 0.01 }
 # keywords related to accuracy
 vasp_keywords.update( { 'ediff' : 1.0e-8, 'prec' : 'Accurate', 'addgrid' : False, 'lreal' : True } )
