@@ -12,7 +12,6 @@ kspacing_value=0.15
 nmpi=8
 
 # keywords related to this model (except k-points, which are handled separately)
-# keywords related to this model (except k-points, which are handled separately)
 vasp_keywords = { 'encut' : 300.0, 'metagga' : 'SCAN', 'ialgo': 58, 'ismear' : 0, 'sigma' : 0.1, 
     'nelm' : 150, 'algo' : 'normal', 'amix' : 0.03, 'bmix' : 0.01, 'pp': 'pbe',
                      'ivdw': 202, 'vdw_sr':1.12, 'ispin':1, 'icharg':2, 'istart':0} # default for SCAN

@@ -1,4 +1,3 @@
-from utilities import relax_config
 import numpy as np
 import model
 import os
@@ -6,19 +5,11 @@ from os.path import join
 from ase.io import read, write
 from warnings import warn
 
-n_steps = 12
-max_opening = 1/7.5
-min_opening = 0
-
-##########################
-
 
 bulk = read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'MoS2-2H.xyz'))
 bulk.set_calculator(model.calculator)
 
-fmax = 0.01
-
-### relax bulk with VASP internal calculator
+### relax bulk with VASP internal algo
 if hasattr(model, "relax"):
     if model.relax:
         print("Relaxing bulk")
@@ -37,13 +28,13 @@ if hasattr(model, "relax"):
 else:
     print("Skipping bulk relaxation, assuming already relaxed")
 
-
 # set up supercell
-# bulk *= (2, 2, 1)
+bulk *= (1, 1, 1)
 
-def surface_slip_energy(bulk, slide):
-    # TODO implement a version that relaxes the surface at each step
+
+def surface_energy(bulk, opening):
     Nat = bulk.get_number_of_atoms()
+
     try:
         ebulk = bulk.get_potential_energy()
         print('bulk cell energy', ebulk)
@@ -51,35 +42,39 @@ def surface_slip_energy(bulk, slide):
         warn('Energy calculation failed for some reason - if SCAN+mbd then this is normal')
         ebulk = np.NaN
 
-    pos = bulk.get_scaled_positions()
-    pos[np.argwhere(pos[:, 2] > 0.5)] += [slide, -slide, 0]
-    bulk.set_scaled_positions(pos)
-    # bulk.cell[2, :] += [0.0, 0.0, 0.0]
+    bulk.positions[np.argwhere(bulk.get_scaled_positions()[:, 2] > 0.5)] += [0.0, 0.0, opening/2]
+    bulk.cell[2, :] += [0.0, 0.0, opening]
+    
     try:
         eexp  = bulk.get_potential_energy()
         print('expanded cell energy', eexp)
     except:
         warn('Energy calculation failed for some reason - if SCAN+mbd then this is normal')
         eexp = np.NaN
-        
+
     e_form = (eexp - ebulk) / (bulk.cell[1,1]*bulk.cell[0,0])
     print('unrelaxed 001 surface formation energy', e_form)
     return e_form
 
+n_steps = 12
+max_opening = 5.0
+min_opening = -0.5
 
-slide_al = []
+al = []
 
-slides = []
-slide_es = []
-for i, slide in enumerate(np.linspace(min_opening, max_opening, n_steps)):
-    print(f'doing slide {i:00d} {slide:7.3f}')
-    slides.append(slide)
+openings = []
+es = []
+for i in range(n_steps + 1):
+    opening = float(i)/float(n_steps)*(max_opening - min_opening) + min_opening
+    openings.append(opening)
     bulk_copy = bulk.copy()
-    model.calculator.set(directory=f'{i}')
     bulk_copy.set_calculator(model.calculator)
-    slide_al.append(bulk_copy)
-    slide_es.append(surface_slip_energy(bulk_copy, slide))
+    al.append(bulk_copy)
+    es.append(surface_energy(bulk_copy, opening))
 
-write('slide_11b0.xyz', slide_al)
+es = np.array(es)
+print('Min opening was ', bulk.cell[2,2] - openings[np.argmin(es)])
 
-properties = {'slide_path': slides, 'es': (slide_es - slide_es[0]).tolist()}
+write('exfoliation_001.xyz', al)
+
+properties = {'openings': openings, 'es': (es - es[-1]).tolist(), 'init_sep': bulk.cell[2, 2]/2}
