@@ -16,9 +16,9 @@ min_opening = 0
 bulk = read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'MoS2-2H.xyz'))
 bulk.set_calculator(model.calculator)
 
-fmax = 0.01
+# fmax = 0.01
 
-### relax bulk with VASP internal calculator
+### relax bulk with VASP internal algo
 if hasattr(model, "relax"):
     if model.relax:
         print("Relaxing bulk")
@@ -26,8 +26,11 @@ if hasattr(model, "relax"):
         model.calculator.set(ibrion=2, nsw=100, ediffg=-0.005, kspacing=0.3, directory='geom_relax') 
         
         if not os.path.exists(join(model.calculator.directory, 'CONTCAR')):
-            bulk.calc = model.calculator
-            bulk.get_potential_energy()
+            try:
+                bulk.calc = model.calculator
+                bulk.get_potential_energy()
+            except:
+                pass
         else:
             print('Relaxation already done, reading and skipping')
 
@@ -61,7 +64,7 @@ def surface_slip_energy(bulk, slide):
     except:
         warn('Energy calculation failed for some reason - if SCAN+mbd then this is normal')
         eexp = np.NaN
-        
+
     e_form = (eexp - ebulk) / (bulk.cell[1,1]*bulk.cell[0,0])
     print('unrelaxed 001 surface formation energy', e_form)
     return e_form

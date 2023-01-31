@@ -12,9 +12,10 @@ nmpi=8
 
 # keywords related to this model (except k-points, which are handled separately)
 vasp_keywords = { 'encut' : 300.0, 'xc' : 'pbesol', 'ismear' : 0, 'sigma' : 0.1, 
-                 'nelm' : 150, 'algo' : 'normal', 'amix' : 0.03, 'bmix' : 0.01, 'ivdw': 12 }
+                 'nelm' : 150, 'amix' : 0.03, 'bmix' : 0.01, 'pp':'pbe',
+                 'ivdw': 263, 'vdw_sr':0.83, 'ialgo':58, 'istart':0, 'icharg':2, 'ispin':1}
 # keywords related to accuracy
-vasp_keywords.update( { 'ediff' : 1.0e-8, 'prec' : 'Accurate', 'addgrid' : False, 'lreal' : True } )
+vasp_keywords.update( { 'ediff' : 1.0e-5, 'prec' : 'Accurate', 'addgrid' : False, 'lreal' : True } )
 # keywords that should always be there
 vasp_keywords.update( { 'ignore_constraints' : True, 'isif' : 3, 'isym' : 0 } )
 # keywords related to parallelism.  Setting ncore sensibly is important for efficiency
