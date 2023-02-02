@@ -68,6 +68,7 @@ for i in range(n_steps + 1):
     opening = float(i)/float(n_steps)*(max_opening - min_opening) + min_opening
     openings.append(opening)
     bulk_copy = bulk.copy()
+    model.calculator.set(directory=f'{i}')
     bulk_copy.set_calculator(model.calculator)
     al.append(bulk_copy)
     es.append(surface_energy(bulk_copy, opening))

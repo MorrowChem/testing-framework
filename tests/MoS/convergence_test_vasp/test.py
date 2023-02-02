@@ -7,14 +7,14 @@ import model
 
 if not hasattr(model.calculator, 'VASP_PP_PATH'):
     raise TypeError('this test is only designed to work with VASP')
- 
-model.calculator.set(ediff=min(model.calculator.ediff, 1e-6))
-print('ediff is set to', model.calculator.ediff)
+
+model.calculator.set(ediff=min(model.calculator.asdict()['inputs']['ediff'], 1e-6))
+print('ediff is set to', model.calculator.asdict()['inputs']['ediff'])
 
 bulk = read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'MoS2-2H.xyz'))
 
-kpts_range = np.linspace(0.5, 0.01*np.pi, 10)
-cutoff_range = np.linspace(100, 800, 10)
+kpts_range = np.linspace(0.5, 0.08, 8)
+cutoff_range = np.linspace(100, 800, 8)
 
 if hasattr(model, "kspacing_value"):
     default_kspacing = model.kspacing_value
@@ -28,6 +28,7 @@ for i, kpts in enumerate(kpts_range):
     bulk_copy.set_calculator(model.calculator)
     es_kpts.append(bulk_copy.get_potential_energy())
 
+print('Testing cutoffs')
 for i, cutoff in enumerate(cutoff_range):
     model.calculator.set(encut=cutoff, kspacing=default_kspacing, directory=f'cutoffs/{i}')
     bulk_copy = bulk.copy()

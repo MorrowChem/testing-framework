@@ -20,11 +20,20 @@ ats = [Mo2, MoS, S2]
 
 # for i in range(len(ats)):
 #     ats[i].calc = model.calculator
+e0dir = None
+if e0dir != None:
+    e0s = []
+    for at in ats:
+        model.calculator.set(directory=f'e0_{str(at.symbols)}')
+        at.calc = model.calculator
+        try:
+            e0s.append(at.get_potential_energy())
+        except:
+            warn('Energy calculation failed for some reason - if SCAN+mbd then this is normal')
+            e0s.append(np.NaN)
 
-for at in ats:
-    model.calculator.set(directory=f'e0_{str(at.symbols)}')
-    at.calc = model.calculator
-    e0s = at.get_potential_energy()
+else:
+    pass # read eos
 
 traj = [[] for at in ats]
 es = [[] for at in ats]
@@ -44,6 +53,7 @@ for ct, i in enumerate(x):
             es[i].append(at_c.get_potential_energy())
         except:
             warn('didn\'t work for ', i)
+            es[i].append(np.NaN)
         write('./dimer_traj_f{names[i]}.xyz', traj[i])
 
 es = np.array(es) - np.array(e0s)[:, np.newaxis]
