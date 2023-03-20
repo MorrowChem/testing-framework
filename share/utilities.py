@@ -321,6 +321,7 @@ def evaluate(atoms, do_energy=True, do_forces=True, do_stress=True, do_predictiv
         if 'local_energy' in model.calculator.calc_args:
             do_local_energies=True
     except AttributeError:
+        do_local_energies=False
         pass
 
     atoms.set_calculator(model.calculator)
